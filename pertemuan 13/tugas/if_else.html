@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tugas Pertemuan 13 - Percabangan If-Else Kompleks</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f6f9;
+            color: #333;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 650px;
+            margin: 30px auto;
+            background: #ffffff;
+            padding: 25px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            border: 1px solid #ddd;
+        }
+
+        h2 {
+            text-align: center;
+            color: #2c3e50;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #3498db;
+            padding-bottom: 10px;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 5px;
+            color: #34495e;
+        }
+
+        .form-group input, .form-group select {
+            width: 100%;
+            padding: 10px;
+            box-sizing: border-box;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+
+        .form-group input:focus, .form-group select:focus {
+            outline: none;
+            border-color: #3498db;
+            box-shadow: 0 0 5px rgba(52, 152, 219, 0.3);
+        }
+
+        .btn {
+            display: block;
+            width: 100%;
+            padding: 12px;
+            background-color: #3498db;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        .btn:hover {
+            background-color: #2980b9;
+        }
+
+        .btn-reset {
+            margin-top: 10px;
+            background-color: #e74c3c;
+        }
+
+        .btn-reset:hover {
+            background-color: #c0392b;
+        }
+
+        #result {
+            margin-top: 25px;
+            padding: 20px;
+            border-radius: 6px;
+            display: none;
+            border-left: 5px solid #ccc;
+        }
+
+        .diterima {
+            background-color: #e8f8f5;
+            border-left-color: #2ecc71 !important;
+            color: #27ae60;
+        }
+
+        .dipertimbangkan {
+            background-color: #fef9e7;
+            border-left-color: #f1c40f !important;
+            color: #d35400;
+        }
+
+        .ditolak {
+            background-color: #fdebd0;
+            border-left-color: #e74c3c !important;
+            color: #c0392b;
+        }
+
+        .result-title {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .result-detail {
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+        .info-tambahan {
+            margin-top: 15px;
+            font-size: 13px;
+            color: #7f8c8d;
+            border-top: 1px dashed #ddd;
+            padding-top: 10px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>Sistem Seleksi Kelayakan Beasiswa</h2>
+    <p style="text-align: center; color: #7f8c8d; font-size: 14px; margin-top: -10px; margin-bottom: 20px;">
+        Program Simulasi Logika If-Else Kompleks untuk Kelayakan Beasiswa Mahasiswa
+    </p>
+
+    <form id="beasiswaForm" onsubmit="prosesSeleksi(event)">
+        <div class="form-group">
+            <label for="nama">Nama Lengkap Mahasiswa</label>
+            <input type="text" id="nama" placeholder="Masukkan nama mahasiswa" required>
+        </div>
+
+        <div class="form-group">
+            <label for="ipk">Indeks Prestasi Kumulatif (IPK)</label>
+            <input type="number" id="ipk" min="0" max="4.00" step="0.01" placeholder="Contoh: 3.45" required>
+        </div>
+
+        <div class="form-group">
+            <label for="pendapatan">Pendapatan Orang Tua (Rupiah per Bulan)</label>
+            <input type="number" id="pendapatan" min="0" placeholder="Contoh: 2500000" required>
+        </div>
+
+        <div class="form-group">
+            <label for="tanggungan">Jumlah Tanggungan Anak (Dalam Keluarga)</label>
+            <input type="number" id="tanggungan" min="1" max="15" placeholder="Contoh: 3" required>
+        </div>
+
+        <div class="form-group">
+            <label for="prestasi">Prestasi Akademik / Non-Akademik Tertinggi</label>
+            <select id="prestasi" required>
+                <option value="tidak_ada">Tidak Ada Prestasi Formal</option>
+                <option value="provinsi">Juara 1/2/3 Tingkat Provinsi</option>
+                <option value="nasional">Juara 1/2/3 Tingkat Nasional / Internasional</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="organisasi">Keaktifan dalam Organisasi Kampus / Luar</label>
+            <select id="organisasi" required>
+                <option value="pasif">Pasif / Tidak Mengikuti Organisasi</option>
+                <option value="aktif">Cukup Aktif (Anggota Biasa)</option>
+                <option value="sangat_aktif">Sangat Aktif (Pengurus Harian / BPH)</option>
+            </select>
+        </div>
+
+        <button type="submit" class="btn">Cek Kelayakan Beasiswa</button>
+        <button type="reset" class="btn btn-reset" onclick="resetHasil()">Reset Form</button>
+    </form>
+
+    <div id="result">
+        <!-- Hasil akan muncul di sini secara dinamis -->
+    </div>
+</div>
+
+<script>
+    function prosesSeleksi(event) {
+        // Mencegah refresh halaman saat submit form
+        event.preventDefault();
+
+        // Mengambil input dari element form
+        const nama = document.getElementById('nama').value;
+        const ipk = parseFloat(document.getElementById('ipk').value);
+        const pendapatan = parseFloat(document.getElementById('pendapatan').value);
+        const tanggungan = parseInt(document.getElementById('tanggungan').value);
+        const prestasi = document.getElementById('prestasi').value;
+        const organisasi = document.getElementById('organisasi').value;
+
+        // Validasi input sederhana
+        if (isNaN(ipk) || ipk < 0 || ipk > 4.0) {
+            alert("Nilai IPK tidak valid! Harus di antara 0.00 sampai 4.00");
+            return;
+        }
+        if (isNaN(pendapatan) || pendapatan < 0) {
+            alert("Pendapatan orang tua tidak boleh kurang dari 0!");
+            return;
+        }
+        if (isNaN(tanggungan) || tanggungan < 1) {
+            alert("Jumlah tanggungan keluarga minimal 1 anak!");
+            return;
+        }
+
+        // Deklarasi variabel penentu keputusan
+        let hasilStatus = "";
+        let rekomendasiBeasiswa = "";
+        let alasan = "";
+        let cssClass = "";
+
+        // =========================================================================
+        // LOGIKA IF-ELSE MAJEMUK & BERSARANG (NESTED) TINGKAT KOMPLEKS
+        // =========================================================================
+        
+        if (ipk >= 3.50) {
+            // Blok IPK Sangat Tinggi (>= 3.50)
+            if (pendapatan < 2500000) {
+                // Pendapatan Rendah
+                hasilStatus = "DITERIMA";
+                rekomendasiBeasiswa = "Beasiswa Prestasi Unggulan & Bantuan Penuh (Bidikmisi)";
+                alasan = `IPK ${nama} sangat tinggi (${ipk.toFixed(2)}) dan pendapatan orang tua tergolong rendah (di bawah Rp 2.500.000). Mahasiswa diprioritaskan untuk pembebasan biaya UKT 100% ditambah uang saku bulanan.`;
+                cssClass = "diterima";
+            } 
+            else if (pendapatan >= 2500000 && pendapatan < 6000000) {
+                // Pendapatan Menengah
+                if (tanggungan >= 3) {
+                    hasilStatus = "DITERIMA";
+                    rekomendasiBeasiswa = "Beasiswa Prestasi Akademik & Bantuan UKT 50%";
+                    alasan = `IPK ${nama} sangat memuaskan (${ipk.toFixed(2)}), pendapatan orang tua menengah, dan jumlah tanggungan anak dalam keluarga cukup banyak (${tanggungan} anak). Diberikan bantuan potongan UKT sebesar 50%.`;
+                    cssClass = "diterima";
+                } else {
+                    hasilStatus = "DITERIMA";
+                    rekomendasiBeasiswa = "Beasiswa Prestasi Akademik Mandiri";
+                    alasan = `IPK ${nama} sangat memuaskan (${ipk.toFixed(2)}) dan pendapatan orang tua menengah. Berhasil masuk seleksi penerima beasiswa prestasi tanpa subsidi biaya hidup tambahan.`;
+                    cssClass = "diterima";
+                }
+            } 
+            else {
+                // Pendapatan Tinggi (>= 6.000.000)
+                if (prestasi === "nasional") {
+                    hasilStatus = "DITERIMA";
+                    rekomendasiBeasiswa = "Beasiswa Jalur Bakat / Prestasi Khusus Nasional";
+                    alasan = `Meskipun pendapatan orang tua tergolong tinggi (>= Rp 6.000.000), ${nama} memiliki prestasi tingkat Nasional/Internasional yang luar biasa serta ditunjang nilai IPK yang cemerlang (${ipk.toFixed(2)}).`;
+                    cssClass = "diterima";
+                } else {
+                    hasilStatus = "DIPERTIMBANGKAN (WAITING LIST)";
+                    rekomendasiBeasiswa = "Beasiswa Kemitraan Non-Finansial / Rektorat";
+                    alasan = `IPK ${nama} sangat memuaskan (${ipk.toFixed(2)}), namun karena pendapatan orang tua Anda tergolong mampu, status Anda ditangguhkan di daftar tunggu. Beasiswa akan diberikan jika ada sisa kuota dana hibah.`;
+                    cssClass = "dipertimbangkan";
+                }
+            }
+        } 
+        else if (ipk >= 3.00 && ipk < 3.50) {
+            // Blok IPK Menengah Atas (3.00 - 3.49)
+            if (pendapatan < 2500000) {
+                // Pendapatan Rendah
+                if (tanggungan >= 2) {
+                    hasilStatus = "DITERIMA";
+                    rekomendasiBeasiswa = "Beasiswa Peningkatan Prestasi Akademik (PPA)";
+                    alasan = `IPK ${nama} cukup baik (${ipk.toFixed(2)}), pendapatan orang tua rendah, dan tanggungan keluarga memadai (>= 2 orang anak). Berhak mendapatkan dana stimulus pendidikan PPA.`;
+                    cssClass = "diterima";
+                } else {
+                    hasilStatus = "DITERIMA";
+                    rekomendasiBeasiswa = "Beasiswa Bantuan Sosial Sederhana";
+                    alasan = `Nilai akademik berada pada kategori Baik dan didukung faktor ekonomi keluarga yang kurang mampu. Meloloskan ${nama} pada program beasiswa bantuan ekonomi.`;
+                    cssClass = "diterima";
+                }
+            } 
+            else if (pendapatan >= 2500000 && pendapatan < 6000000) {
+                // Pendapatan Menengah
+                if (prestasi === "nasional" || prestasi === "provinsi") {
+                    hasilStatus = "DITERIMA";
+                    rekomendasiBeasiswa = "Beasiswa Ekstrakurikuler Berprestasi";
+                    alasan = `IPK tergolong Baik (${ipk.toFixed(2)}) ditambah dukungan prestasi formal tingkat ${prestasi === 'nasional' ? 'Nasional' : 'Provinsi'} memvalidasi kelayakan penerimaan beasiswa prestasi non-akademik.`;
+                    cssClass = "diterima";
+                } 
+                else if (organisasi === "sangat_aktif" && tanggungan >= 3) {
+                    hasilStatus = "DITERIMA";
+                    rekomendasiBeasiswa = "Beasiswa Aktivis / Kepemimpinan Kampus";
+                    alasan = `IPK Baik (${ipk.toFixed(2)}) dengan kontribusi organisasi yang Sangat Aktif serta tanggungan keluarga yang berat (${tanggungan} anak) menjadikan mahasiswa ini layak masuk beasiswa khusus aktivis.`;
+                    cssClass = "diterima";
+                } 
+                else {
+                    hasilStatus = "DITOLAK";
+                    rekomendasiBeasiswa = "Tidak Ada";
+                    alasan = `IPK ${nama} berada di kategori menengah, namun tingkat ekonomi keluarga tergolong cukup mampu dengan tanggungan sedikit, serta minimnya keaktifan organisasi atau prestasi pendukung.`;
+                    cssClass = "ditolak";
+                }
+            } 
+            else {
+                // Pendapatan Tinggi (>= 6.000.000)
+                if (prestasi === "nasional") {
+                    hasilStatus = "DITERIMA";
+                    rekomendasiBeasiswa = "Beasiswa Kehormatan Bakat Istimewa";
+                    alasan = `Faktor pendapatan orang tua dikesampingkan karena ${nama} memiliki sertifikat prestasi resmi tingkat Nasional. IPK ${ipk.toFixed(2)} melengkapi syarat minimal pendaftaran.`;
+                    cssClass = "diterima";
+                } else {
+                    hasilStatus = "DITOLAK";
+                    rekomendasiBeasiswa = "Tidak Ada";
+                    alasan = `IPK ${nama} standar, ekonomi keluarga tergolong sangat mampu, dan tidak memiliki prestasi luar biasa untuk dijadikan dasar pengecualian kriteria beasiswa ekonomi.`;
+                    cssClass = "ditolak";
+                }
+            }
+        } 
+        else if (ipk >= 2.50 && ipk < 3.00) {
+            // Blok IPK Menengah Bawah (2.50 - 2.99)
+            if (pendapatan < 2500000) {
+                // Pendapatan Rendah
+                if (prestasi === "nasional" || prestasi === "provinsi") {
+                    hasilStatus = "DITERIMA";
+                    rekomendasiBeasiswa = "Beasiswa Bantuan Ekonomi & Bakat Minat";
+                    alasan = `Meskipun IPK Anda berada di tingkat cukup (${ipk.toFixed(2)}), faktor ekonomi keluarga yang kurang mampu dan memiliki riwayat prestasi tingkat daerah/nasional meloloskan Anda.`;
+                    cssClass = "diterima";
+                } 
+                else if (tanggungan >= 4) {
+                    hasilStatus = "DIPERTIMBANGKAN (WAITING LIST)";
+                    rekomendasiBeasiswa = "Beasiswa Stimulan Kesejahteraan Khusus";
+                    alasan = `IPK di bawah 3.00, namun pendapatan orang tua sangat rendah dengan tanggungan anak yang sangat banyak (${tanggungan} orang). Berkas diajukan ke dewan pertimbangan beasiswa untuk diverifikasi lebih lanjut.`;
+                    cssClass = "dipertimbangkan";
+                } 
+                else {
+                    hasilStatus = "DITOLAK";
+                    rekomendasiBeasiswa = "Tidak Ada";
+                    alasan = `Pendapatan orang tua rendah, namun nilai IPK Anda (${ipk.toFixed(2)}) tidak memenuhi batas minimal akademik pendaftaran beasiswa dan tidak memiliki prestasi khusus sebagai penyeimbang.`;
+                    cssClass = "ditolak";
+                }
+            } 
+            else {
+                // Pendapatan Menengah & Tinggi untuk IPK < 3.00
+                hasilStatus = "DITOLAK";
+                rekomendasiBeasiswa = "Tidak Ada";
+                alasan = `IPK ${nama} di bawah rata-rata (${ipk.toFixed(2)}) dan pendapatan orang tua tergolong menengah ke atas. Tidak memenuhi syarat baik dari segi akademis maupun urgensi ekonomi.`;
+                cssClass = "ditolak";
+            }
+        } 
+        else {
+            // Blok IPK Rendah (< 2.50)
+            if (prestasi === "nasional") {
+                hasilStatus = "DIPERTIMBANGKAN (WAITING LIST)";
+                rekomendasiBeasiswa = "Beasiswa Dispensasi Atlet/Seniman Berbakat";
+                alasan = `IPK ${nama} sangat kurang (${ipk.toFixed(2)}), namun mahasiswa merupakan aset berharga karena memiliki prestasi tingkat Nasional. Masuk verifikasi dispensasi khusus di bawah pengawasan biro kemahasiswaan.`;
+                cssClass = "dipertimbangkan";
+            } else {
+                hasilStatus = "DITOLAK";
+                rekomendasiBeasiswa = "Tidak Ada";
+                alasan = `IPK ${nama} berada di tingkat sangat kurang (${ipk.toFixed(2)}) serta tidak didukung prestasi tingkat nasional. Silakan tingkatkan indeks prestasi kumulatif Anda terlebih dahulu di semester berikutnya.`;
+                cssClass = "ditolak";
+            }
+        }
+
+        // Menampilkan output hasil keputusan ke halaman web
+        const resultDiv = document.getElementById('result');
+        resultDiv.style.display = 'block';
+        resultDiv.className = cssClass; // Menerapkan style warna yang dinamis
+
+        // Render HTML hasil
+        resultDiv.innerHTML = `
+            <div class="result-title">Hasil Keputusan: ${hasilStatus}</div>
+            <div class="result-detail">
+                <strong>Nama Mahasiswa:</strong> ${nama}<br>
+                <strong>Rekomendasi Program:</strong> ${rekomendasiBeasiswa}<br>
+                <strong>Penjelasan Kriteria:</strong> ${alasan}
+            </div>
+            <div class="info-tambahan">
+                * Kriteria penilaian didasarkan pada bobot: IPK (40%), Pendapatan (30%), Jumlah Tanggungan (15%), Prestasi & Organisasi (15%). Keputusan di atas bersifat final.
+            </div>
+        `;
+    }
+
+    function resetHasil() {
+        const resultDiv = document.getElementById('result');
+        resultDiv.style.display = 'none';
+        resultDiv.innerHTML = '';
+        resultDiv.className = '';
+    }
+</script>
+
+</body>
+</html>

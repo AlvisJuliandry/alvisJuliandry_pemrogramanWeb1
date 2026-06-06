@@ -1,0 +1,645 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tugas Pertemuan 13 - Fungsi (Function) Kompleks</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f5f7fa;
+            color: #333;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 20px auto;
+            background: #ffffff;
+            padding: 25px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            border: 1px solid #e1e8ed;
+        }
+
+        h2 {
+            text-align: center;
+            color: #2c3e50;
+            margin-bottom: 5px;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #7f8c8d;
+            font-size: 14px;
+            margin-bottom: 25px;
+        }
+
+        .row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .col-6 {
+            flex: 1;
+            min-width: 350px;
+        }
+
+        fieldset {
+            border: 1px solid #dcdde1;
+            border-radius: 6px;
+            padding: 15px;
+            margin-bottom: 20px;
+            background-color: #fafbfc;
+        }
+
+        legend {
+            font-weight: bold;
+            color: #2980b9;
+            padding: 0 8px;
+        }
+
+        .form-row {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 12px;
+        }
+
+        .form-group {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .form-group label {
+            font-size: 13px;
+            font-weight: bold;
+            margin-bottom: 4px;
+            color: #4a5568;
+        }
+
+        .form-group input, .form-group select {
+            padding: 8px;
+            font-size: 14px;
+            border: 1px solid #cbd5e0;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+
+        .btn-add {
+            background-color: #2ecc71;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 14px;
+            align-self: flex-end;
+            height: 38px;
+        }
+
+        .btn-add:hover {
+            background-color: #27ae60;
+        }
+
+        .btn-process {
+            background-color: #3498db;
+            color: white;
+            border: none;
+            padding: 12px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 15px;
+            width: 100%;
+            margin-top: 10px;
+        }
+
+        .btn-process:hover {
+            background-color: #2980b9;
+        }
+
+        /* Styling Tabel Keranjang */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+            font-size: 14px;
+        }
+
+        table th, table td {
+            border: 1px solid #e1e8ed;
+            padding: 8px;
+            text-align: left;
+        }
+
+        table th {
+            background-color: #f1f2f6;
+            color: #2c3e50;
+        }
+
+        table td button {
+            background-color: #e74c3c;
+            color: white;
+            border: none;
+            padding: 4px 8px;
+            border-radius: 3px;
+            cursor: pointer;
+            font-size: 12px;
+        }
+
+        table td button:hover {
+            background-color: #c0392b;
+        }
+
+        .text-right {
+            text-align: right;
+        }
+
+        .empty-cart-msg {
+            text-align: center;
+            color: #95a5a6;
+            font-style: italic;
+            padding: 20px 0;
+        }
+
+        /* Struk/Receipt Design */
+        .receipt-container {
+            background: #ffffff;
+            border: 1px dashed #7f8c8d;
+            padding: 20px;
+            border-radius: 4px;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 13px;
+            line-height: 1.4;
+            color: #000;
+            box-shadow: inset 0 0 10px rgba(0,0,0,0.05);
+            display: none;
+        }
+
+        .receipt-header {
+            text-align: center;
+            border-bottom: 1px dashed #000;
+            padding-bottom: 8px;
+            margin-bottom: 10px;
+        }
+
+        .receipt-footer {
+            text-align: center;
+            border-top: 1px dashed #000;
+            margin-top: 15px;
+            padding-top: 10px;
+        }
+
+        .receipt-row {
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .divider {
+            border-top: 1px dashed #000;
+            margin: 8px 0;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>Sistem Kasir & Transaksi Restoran</h2>
+    <p class="subtitle">Implementasi Fungsi (Function) Modular & Kompleks dengan Studi Kasus Perhitungan Billing Restoran</p>
+
+    <div class="row">
+        <!-- Kolom Kiri: Input Transaksi -->
+        <div class="col-6">
+            <!-- 1. Input Menu -->
+            <fieldset>
+                <legend>Pilih & Tambah Item Menu</legend>
+                <div class="form-row">
+                    <div class="form-group" style="flex: 2;">
+                        <label for="pilihMenu">Item Menu Terdaftar</label>
+                        <select id="pilihMenu" onchange="autoFillPrice()">
+                            <option value="" disabled selected>-- Pilih Menu --</option>
+                            <option value="Nasi Goreng Spesial|28000">Nasi Goreng Spesial (Rp 28.000)</option>
+                            <option value="Mie Goreng Seafood|26000">Mie Goreng Seafood (Rp 26.000)</option>
+                            <option value="Ayam Bakar Madu|25000">Ayam Bakar Madu (Rp 25.000)</option>
+                            <option value="Sate Ayam Madura|20000">Sate Ayam Madura (Rp 20.000)</option>
+                            <option value="Es Jeruk Peras|8000">Es Jeruk Peras (Rp 8.000)</option>
+                            <option value="Es Teh Manis|5000">Es Teh Manis (Rp 5.000)</option>
+                            <option value="custom">-- Menu Kustom (Ketik Sendiri) --</option>
+                        </select>
+                    </div>
+                    <div class="form-group" style="flex: 1.5;">
+                        <label for="namaKustom">Nama Custom</label>
+                        <input type="text" id="namaKustom" placeholder="Menu Baru" disabled>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="hargaMenu">Harga Satuan (Rp)</label>
+                        <input type="number" id="hargaMenu" min="0" placeholder="0">
+                    </div>
+                    <div class="form-group">
+                        <label for="qtyMenu">Jumlah (Qty)</label>
+                        <input type="number" id="qtyMenu" min="1" value="1">
+                    </div>
+                    <button class="btn-add" onclick="handleTambahKeKeranjang()">Tambah</button>
+                </div>
+            </fieldset>
+
+            <!-- 2. Parameter Transaksi -->
+            <fieldset>
+                <legend>Informasi Pelanggan & Promo</legend>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="tipeMember">Kategori Member</label>
+                        <select id="tipeMember">
+                            <option value="umum">Umum (Bukan Member)</option>
+                            <option value="bronze">Member Bronze (Diskon 5%)</option>
+                            <option value="silver">Member Silver (Diskon 10%)</option>
+                            <option value="gold">Member Gold (Diskon 15%)</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="tipePesanan">Tipe Pelayanan</label>
+                        <select id="tipePesanan">
+                            <option value="dine_in">Dine-In (Makan di Tempat - Layanan 5%)</option>
+                            <option value="take_away">Take-Away (Bawa Pulang - Bebas Layanan)</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="kodePromo">Kode Promo Tambahan</label>
+                        <input type="text" id="kodePromo" placeholder="Contoh: HEMAT20 / MHS10" style="text-transform: uppercase;">
+                    </div>
+                </div>
+                <p style="margin: 0; font-size: 11px; color: #7f8c8d;">
+                    * Petunjuk Kode Promo: <br>
+                    - <strong>HEMAT20</strong>: Diskon Rp 20.000 (Min. Transaksi Rp 80.000)<br>
+                    - <strong>MHS10</strong>: Diskon Tambahan 10% Khusus Mahasiswa (Tanpa minimal)
+                </p>
+                <button class="btn-process" onclick="handleProsesTransaksi()">Hitung & Cetak Struk</button>
+            </fieldset>
+        </div>
+
+        <!-- Kolom Kanan: Keranjang & Struk Pembelian -->
+        <div class="col-6">
+            <fieldset>
+                <legend>Daftar Keranjang Belanja</legend>
+                <div id="tabelContainer">
+                    <table id="cartTable">
+                        <thead>
+                            <tr>
+                                <th>Menu</th>
+                                <th style="width: 70px;" class="text-right">Harga</th>
+                                <th style="width: 40px;" class="text-right">Qty</th>
+                                <th style="width: 80px;" class="text-right">Subtotal</th>
+                                <th style="width: 50px;">Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody id="cartBody">
+                            <!-- Baris keranjang diisi lewat JS -->
+                        </tbody>
+                    </table>
+                    <div id="emptyCartMessage" class="empty-cart-msg">Keranjang masih kosong</div>
+                </div>
+            </fieldset>
+
+            <!-- Render struk kasir -->
+            <div id="receipt" class="receipt-container">
+                <!-- Data di-render lewat JS -->
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // State global keranjang belanja (Array of Object)
+    let keranjang = [];
+
+    // Fungsi otomatis mengisi nama kustom dan harga
+    function autoFillPrice() {
+        const pilihMenu = document.getElementById('pilihMenu').value;
+        const inputNamaKustom = document.getElementById('namaKustom');
+        const inputHarga = document.getElementById('hargaMenu');
+
+        if (pilihMenu === "custom") {
+            inputNamaKustom.disabled = false;
+            inputNamaKustom.value = "";
+            inputHarga.value = "";
+            inputHarga.disabled = false;
+        } else if (pilihMenu) {
+            const [nama, harga] = pilihMenu.split('|');
+            inputNamaKustom.disabled = true;
+            inputNamaKustom.value = nama;
+            inputHarga.value = harga;
+            inputHarga.disabled = true;
+        }
+    }
+
+    // Handler ketika tombol tambah keranjang diklik
+    function handleTambahKeKeranjang() {
+        const pilihMenu = document.getElementById('pilihMenu').value;
+        const inputNamaKustom = document.getElementById('namaKustom').value.trim();
+        const inputHarga = parseFloat(document.getElementById('hargaMenu').value);
+        const qty = parseInt(document.getElementById('qtyMenu').value);
+
+        let namaItem = "";
+
+        if (pilihMenu === "custom") {
+            if (!inputNamaKustom) {
+                alert("Masukkan nama menu kustom!");
+                return;
+            }
+            namaItem = inputNamaKustom;
+        } else if (pilihMenu) {
+            namaItem = pilihMenu.split('|')[0];
+        } else {
+            alert("Silakan pilih menu terlebih dahulu!");
+            return;
+        }
+
+        if (isNaN(inputHarga) || inputHarga <= 0) {
+            alert("Harga item harus lebih dari 0!");
+            return;
+        }
+        if (isNaN(qty) || qty < 1) {
+            alert("Jumlah item minimal 1!");
+            return;
+        }
+
+        // Memanggil fungsi modular untuk menambah item
+        tambahItem(namaItem, inputHarga, qty);
+        
+        // Reset form input item
+        document.getElementById('pilihMenu').selectedIndex = 0;
+        document.getElementById('namaKustom').value = "";
+        document.getElementById('namaKustom').disabled = true;
+        document.getElementById('hargaMenu').value = "";
+        document.getElementById('hargaMenu').disabled = false;
+        document.getElementById('qtyMenu').value = "1";
+    }
+
+    // =========================================================================
+    // KUMPULAN FUNGSI (FUNCTION) MODULAR & BERSARANG UNTUK LOGIKA TRANSAKSI
+    // =========================================================================
+
+    /**
+     * 1. Fungsi menambah item ke array keranjang (Side Effect & Logic check)
+     */
+    function tambahItem(nama, harga, jumlah) {
+        // Cek jika item sudah pernah ditambahkan, cukup update jumlahnya
+        const indexExisted = keranjang.findIndex(item => item.nama.toLowerCase() === nama.toLowerCase());
+
+        if (indexExisted !== -1) {
+            keranjang[indexExisted].jumlah += jumlah;
+            keranjang[indexExisted].subtotal = keranjang[indexExisted].jumlah * keranjang[indexExisted].harga;
+        } else {
+            // Jika baru, buat objek item transaksi dan masukkan ke keranjang
+            const itemBaru = {
+                nama: nama,
+                harga: harga,
+                jumlah: jumlah,
+                subtotal: harga * jumlah
+            };
+            keranjang.push(itemBaru);
+        }
+
+        // Perbarui tabel keranjang di layar
+        renderTableCart();
+    }
+
+    /**
+     * 2. Fungsi untuk menghapus item dari keranjang berdasarkan index
+     */
+    function hapusItem(index) {
+        if (index >= 0 && index < keranjang.length) {
+            keranjang.splice(index, 1);
+            renderTableCart();
+        }
+    }
+
+    /**
+     * 3. Fungsi menghitung total dasar (subtotal awal) dari seluruh keranjang
+     * Mendemonstrasikan penggunaan metode perulangan dalam array
+     */
+    function hitungSubtotal(cartArray) {
+        let total = 0;
+        for (let i = 0; i < cartArray.length; i++) {
+            total += cartArray[i].subtotal;
+        }
+        return total;
+    }
+
+    /**
+     * 4. Fungsi menghitung total diskon secara kompleks berdasarkan jenis member & kode promo
+     * Mendemonstrasikan parameter bersyarat, percabangan if-else majemuk
+     */
+    function hitungDiskon(subtotal, tipeMember, kodePromo) {
+        let diskonMember = 0;
+        let diskonPromo = 0;
+
+        // A. Hitung Diskon Berdasarkan Kategori Member
+        if (tipeMember === 'gold') {
+            diskonMember = subtotal * 0.15; // 15%
+        } else if (tipeMember === 'silver') {
+            diskonMember = subtotal * 0.10; // 10%
+        } else if (tipeMember === 'bronze') {
+            diskonMember = subtotal * 0.05; // 5%
+        } else {
+            diskonMember = 0; // Umum
+        }
+
+        // B. Hitung Diskon Berdasarkan Kode Promo (di-normalize ke uppercase)
+        const promo = kodePromo.trim().toUpperCase();
+        if (promo === 'HEMAT20') {
+            // Diskon Rp 20.000 dengan syarat minimal belanja Rp 80.000 sebelum pajak/diskon member
+            if (subtotal >= 80000) {
+                diskonPromo = 20000;
+            } else {
+                diskonPromo = 0; // Syarat minimal belanja tidak terpenuhi
+            }
+        } else if (promo === 'MHS10') {
+            // Diskon tambahan 10% dari sisa nilai setelah dipotong diskon member
+            const sisaSetelahMember = subtotal - diskonMember;
+            diskonPromo = sisaSetelahMember * 0.10;
+        }
+
+        // Mengembalikan objek diskon gabungan
+        return {
+            member: diskonMember,
+            promo: diskonPromo,
+            totalDiskon: diskonMember + diskonPromo
+        };
+    }
+
+    /**
+     * 5. Fungsi menghitung biaya pelayanan (Service Charge)
+     * Dine-in dikenakan 5%, Takeaway bebas biaya layanan
+     */
+    function hitungBiayaLayanan(subtotalSebelumPajak, tipePesanan) {
+        if (tipePesanan === 'dine_in') {
+            return subtotalSebelumPajak * 0.05; // 5%
+        }
+        return 0; // Take away gratis layanan
+    }
+
+    /**
+     * 6. Fungsi menghitung PPN Pajak Pertambahan Nilai
+     * Menggunakan Default Parameter tarifPajak = 0.11 (PPN 11% sesuai regulasi terbaru)
+     */
+    function hitungPajak(jumlahKenaPajak, tarifPajak = 0.11) {
+        return jumlahKenaPajak * tarifPajak;
+    }
+
+    /**
+     * 7. FUNGSI UTAMA (ORCHESTRATOR FUNCTION)
+     * Mengkoordinasi sub-fungsi di atas untuk mengkalkulasi seluruh billing invoice
+     * Menerima input array keranjang dan parameter penentu
+     * Mengembalikan objek invoice lengkap siap cetak
+     */
+    function prosesTransaksi(cart, memberType, promoCode, orderType) {
+        const subtotal = hitungSubtotal(cart);
+        
+        // Memanggil sub-fungsi diskon
+        const diskonObj = hitungDiskon(subtotal, memberType, promoCode);
+        const totalDiskon = diskonObj.totalDiskon;
+        
+        // Nilai sisa belanja setelah dikurangi seluruh diskon
+        const subtotalSetelahDiskon = subtotal - totalDiskon > 0 ? subtotal - totalDiskon : 0;
+        
+        // Memanggil sub-fungsi biaya pelayanan
+        const serviceCharge = hitungBiayaLayanan(subtotalSetelahDiskon, orderType);
+        
+        // Pajak PPN 11% dikenakan pada nilai setelah diskon + biaya pelayanan
+        const dasarPajak = subtotalSetelahDiskon + serviceCharge;
+        const ppnPajak = hitungPajak(dasarPajak, 0.11);
+        
+        // Total akhir yang harus dibayarkan pelanggan
+        const grandTotal = dasarPajak + ppnPajak;
+
+        // Mengembalikan data hasil kalkulasi lengkap
+        return {
+            subtotalDasar: subtotal,
+            diskonMember: diskonObj.member,
+            diskonPromo: diskonObj.promo,
+            totalPotongan: totalDiskon,
+            layanan: serviceCharge,
+            pajakPPN: ppnPajak,
+            totalBayar: grandTotal
+        };
+    }
+
+    // =========================================================================
+    // RENDERING & INTERFACE UTILITY FUNCTIONS
+    // =========================================================================
+
+    // Fungsi menggambar data keranjang belanja ke tabel HTML
+    function renderTableCart() {
+        const cartBody = document.getElementById('cartBody');
+        const emptyCartMsg = document.getElementById('emptyCartMessage');
+        
+        cartBody.innerHTML = "";
+
+        if (keranjang.length === 0) {
+            emptyCartMsg.style.display = "block";
+            return;
+        }
+
+        emptyCartMsg.style.display = "none";
+
+        keranjang.forEach((item, index) => {
+            const tr = document.createElement('tr');
+            tr.innerHTML = `
+                <td><strong>${item.nama}</strong></td>
+                <td class="text-right">Rp ${item.harga.toLocaleString('id-ID')}</td>
+                <td class="text-right">${item.jumlah}</td>
+                <td class="text-right">Rp ${item.subtotal.toLocaleString('id-ID')}</td>
+                <td style="text-align: center;">
+                    <button onclick="hapusItem(${index})">Hapus</button>
+                </td>
+            `;
+            cartBody.appendChild(tr);
+        });
+    }
+
+    // Handler utama saat tombol "Hitung & Cetak Struk" diklik
+    function handleProsesTransaksi() {
+        if (keranjang.length === 0) {
+            alert("Keranjang belanja masih kosong! Silakan tambahkan menu terlebih dahulu.");
+            return;
+        }
+
+        const memberType = document.getElementById('tipeMember').value;
+        const orderType = document.getElementById('tipePesanan').value;
+        const promoCode = document.getElementById('kodePromo').value;
+
+        // Menghitung hasil transaksi lewat fungsi kompleks utama
+        const hasil = prosesTransaksi(keranjang, memberType, promoCode, orderType);
+
+        // Menampilkan struk kasir
+        const receiptDiv = document.getElementById('receipt');
+        receiptDiv.style.display = 'block';
+
+        // Membuat string struk ala struk kasir fisik dengan font monospaced
+        let dateStr = new Date().toLocaleString('id-ID');
+        let strukHTML = `
+<div class="receipt-header">
+    <strong>WARUNG MAKAN MAHASISWA</strong><br>
+    Jl. Informatika Raya No. 404, Kampus 1<br>
+    Tlp: 0812-3456-7890<br>
+    ${dateStr}
+</div>
+<div>Pelanggan  : Tipe ${memberType.toUpperCase()}</div>
+<div>Layanan    : ${orderType === 'dine_in' ? 'DINE-IN (MAKAN DITEMPAT)' : 'TAKE-AWAY (BAWA PULANG)'}</div>
+<div class="divider"></div>
+        `;
+
+        // Loop item belanja
+        keranjang.forEach(item => {
+            const spaceCount = 30 - item.nama.length;
+            const spaces = " ".repeat(spaceCount > 0 ? spaceCount : 1);
+            
+            strukHTML += `<div>${item.nama}</div>`;
+            strukHTML += `<div class="receipt-row">
+                <span>  ${item.jumlah} x Rp ${item.harga.toLocaleString('id-ID')}</span>
+                <span>Rp ${item.subtotal.toLocaleString('id-ID')}</span>
+            </div>`;
+        });
+
+        strukHTML += `<div class="divider"></div>`;
+        strukHTML += `<div class="receipt-row"><span>SUBTOTAL DASAR :</span> <span>Rp ${hasil.subtotalDasar.toLocaleString('id-ID')}</span></div>`;
+        
+        if (hasil.diskonMember > 0) {
+            strukHTML += `<div class="receipt-row" style="color: #27ae60;"><span>DISKON MEMBER  :</span> <span>-Rp ${hasil.diskonMember.toLocaleString('id-ID')}</span></div>`;
+        }
+        if (hasil.diskonPromo > 0) {
+            strukHTML += `<div class="receipt-row" style="color: #27ae60;"><span>DISKON PROMO   :</span> <span>-Rp ${hasil.diskonPromo.toLocaleString('id-ID')}</span></div>`;
+        }
+        if (hasil.layanan > 0) {
+            strukHTML += `<div class="receipt-row"><span>LAYANAN (5%)    :</span> <span>Rp ${hasil.layanan.toLocaleString('id-ID')}</span></div>`;
+        }
+        
+        strukHTML += `<div class="receipt-row"><span>PAJAK PPN (11%):</span> <span>Rp ${hasil.pajakPPN.toLocaleString('id-ID')}</span></div>`;
+        strukHTML += `<div class="divider"></div>`;
+        strukHTML += `<div class="receipt-row" style="font-weight: bold; font-size: 14px;"><span>GRAND TOTAL     :</span> <span>Rp ${hasil.totalBayar.toLocaleString('id-ID')}</span></div>`;
+        
+        strukHTML += `
+<div class="receipt-footer">
+    Terima Kasih Atas Kunjungan Anda!<br>
+    Struk ini dicetak otomatis secara sistem.<br>
+    -- Programmed by Alvis (Informatika) --
+</div>
+        `;
+
+        receiptDiv.innerHTML = strukHTML;
+    }
+</script>
+
+</body>
+</html>

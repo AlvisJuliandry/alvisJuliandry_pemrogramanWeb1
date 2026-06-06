@@ -1,0 +1,694 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Latihan Operator JS - Pemrograman Web 1</title>
+    <!-- Google Fonts: Plus Jakarta Sans & JetBrains Mono for Code -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <style>
+        /* Modern Design System & CSS Variables */
+        :root {
+            --bg-primary: #0b0f19;
+            --bg-secondary: #131b2e;
+            --bg-card: rgba(30, 41, 59, 0.4);
+            --border-color: rgba(255, 255, 255, 0.08);
+            
+            --accent-primary: #3b82f6; /* Blue */
+            --accent-primary-glow: rgba(59, 130, 246, 0.35);
+            --accent-success: #10b981; /* Green */
+            --accent-success-glow: rgba(16, 185, 129, 0.2);
+            --accent-warning: #f59e0b; /* Yellow */
+            
+            --text-title: #f8fafc;
+            --text-body: #94a3b8;
+            --text-muted: #64748b;
+            --text-highlight: #38bdf8;
+            
+            --font-main: 'Plus Jakarta Sans', sans-serif;
+            --font-mono: 'JetBrains Mono', monospace;
+            
+            --shadow-premium: 0 10px 30px -10px rgba(0, 0, 0, 0.5);
+            --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        /* Base Reset */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: var(--bg-primary);
+            background-image: 
+                radial-gradient(at 0% 0%, rgba(59, 130, 246, 0.12) 0px, transparent 50%),
+                radial-gradient(at 100% 100%, rgba(16, 185, 129, 0.08) 0px, transparent 50%);
+            color: var(--text-body);
+            font-family: var(--font-main);
+            min-height: 100vh;
+            line-height: 1.6;
+            padding: 2rem 1rem;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        /* Header Section */
+        header {
+            text-align: center;
+            margin-bottom: 3rem;
+            position: relative;
+        }
+
+        header::after {
+            content: '';
+            display: block;
+            width: 80px;
+            height: 4px;
+            background: linear-gradient(90deg, var(--accent-primary), var(--accent-success));
+            margin: 1.5rem auto 0 auto;
+            border-radius: 2px;
+            box-shadow: 0 0 12px var(--accent-primary-glow);
+        }
+
+        h1 {
+            color: var(--text-title);
+            font-size: 2.5rem;
+            font-weight: 800;
+            letter-spacing: -0.025em;
+            margin-bottom: 0.5rem;
+            background: linear-gradient(135deg, #ffffff 40%, #a5f3fc 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .subtitle {
+            font-size: 1.1rem;
+            color: var(--text-body);
+            font-weight: 500;
+        }
+
+        /* Student Metadata Card */
+        .student-badge {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 0.75rem 1.5rem;
+            display: inline-flex;
+            gap: 1.5rem;
+            margin-top: 1rem;
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            box-shadow: var(--shadow-premium);
+        }
+
+        .student-badge span strong {
+            color: var(--text-title);
+        }
+
+        /* Main Workspace Layout */
+        .grid-layout {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            align-items: start;
+        }
+
+        @media (max-width: 992px) {
+            .grid-layout {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Cards & Containers */
+        .card {
+            background: var(--bg-card);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid var(--border-color);
+            border-radius: 24px;
+            padding: 2.25rem;
+            box-shadow: var(--shadow-premium);
+            transition: var(--transition-smooth);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.15), transparent);
+        }
+
+        .card:hover {
+            border-color: rgba(59, 130, 246, 0.25);
+            box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.6), 0 0 25px rgba(59, 130, 246, 0.05);
+        }
+
+        .card-title {
+            color: var(--text-title);
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .card-title svg {
+            color: var(--accent-primary);
+        }
+
+        /* Case Description Banner */
+        .case-banner {
+            background: rgba(59, 130, 246, 0.08);
+            border-left: 4px solid var(--accent-primary);
+            border-radius: 8px;
+            padding: 1.25rem;
+            margin-bottom: 2rem;
+            font-size: 0.95rem;
+        }
+
+        .case-banner h4 {
+            color: var(--text-title);
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        /* Invoice / Receipt Styling */
+        .receipt {
+            background: rgba(15, 23, 42, 0.7);
+            border: 2px dashed rgba(255, 255, 255, 0.05);
+            border-radius: 16px;
+            padding: 2rem;
+            font-family: var(--font-mono);
+            font-size: 0.9rem;
+            color: #cbd5e1;
+            position: relative;
+        }
+
+        .receipt-header {
+            text-align: center;
+            border-bottom: 1px dashed rgba(255, 255, 255, 0.15);
+            padding-bottom: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .receipt-header h3 {
+            color: var(--text-title);
+            font-family: var(--font-main);
+            font-size: 1.25rem;
+            font-weight: 800;
+            letter-spacing: 0.05em;
+        }
+
+        .receipt-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 0.75rem;
+        }
+
+        .receipt-divider {
+            border-bottom: 1px dashed rgba(255, 255, 255, 0.15);
+            margin: 1rem 0;
+        }
+
+        .highlight-blue {
+            color: var(--text-highlight);
+            font-weight: bold;
+        }
+
+        .highlight-green {
+            color: var(--accent-success);
+            font-weight: bold;
+        }
+
+        .highlight-yellow {
+            color: var(--accent-warning);
+            font-weight: bold;
+        }
+
+        /* Operator Legend / Breakdown */
+        .op-group {
+            margin-bottom: 2rem;
+        }
+
+        .op-group-title {
+            font-size: 1.1rem;
+            color: var(--text-title);
+            font-weight: 700;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .op-item {
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 1rem;
+            margin-bottom: 0.75rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.25rem;
+            transition: var(--transition-smooth);
+        }
+
+        .op-item:hover {
+            background: rgba(255, 255, 255, 0.04);
+            border-color: rgba(255, 255, 255, 0.15);
+        }
+
+        .op-expr {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .code-snippet {
+            font-family: var(--font-mono);
+            font-size: 0.85rem;
+            background: rgba(0, 0, 0, 0.3);
+            padding: 0.2rem 0.5rem;
+            border-radius: 6px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            color: #38bdf8;
+        }
+
+        .badge {
+            font-size: 0.75rem;
+            font-weight: 700;
+            padding: 0.2rem 0.6rem;
+            border-radius: 20px;
+            text-transform: uppercase;
+        }
+
+        .badge-arith {
+            background: rgba(59, 130, 246, 0.15);
+            color: #60a5fa;
+            border: 1px solid rgba(59, 130, 246, 0.2);
+        }
+
+        .badge-comp {
+            background: rgba(16, 185, 129, 0.15);
+            color: #34d399;
+            border: 1px solid rgba(16, 185, 129, 0.2);
+        }
+
+        .op-desc {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            margin-top: 0.25rem;
+        }
+
+        /* Explanation Box */
+        .explanation-box {
+            background: rgba(245, 158, 11, 0.05);
+            border: 1px solid rgba(245, 158, 11, 0.15);
+            border-radius: 16px;
+            padding: 1.5rem;
+            margin-top: 2rem;
+        }
+
+        .explanation-box h4 {
+            color: var(--accent-warning);
+            font-weight: 700;
+            margin-bottom: 0.75rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .explanation-box ul {
+            list-style-type: none;
+        }
+
+        .explanation-box li {
+            position: relative;
+            padding-left: 1.25rem;
+            margin-bottom: 0.5rem;
+            font-size: 0.9rem;
+        }
+
+        .explanation-box li::before {
+            content: "✓";
+            position: absolute;
+            left: 0;
+            color: var(--accent-success);
+            font-weight: bold;
+        }
+
+        /* Footer styling */
+        footer {
+            text-align: center;
+            margin-top: 4rem;
+            color: var(--text-muted);
+            font-size: 0.85rem;
+            border-top: 1px solid var(--border-color);
+            padding-top: 2rem;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <header>
+        <h1>Tugas Pemrograman Web 1</h1>
+        <div class="subtitle">Simulasi Operator Aritmatika & Perbandingan di JavaScript</div>
+        
+        <div class="student-badge">
+            <span>Mahasiswa: <strong>Alvis</strong></span>
+            <span>Matakuliah: <strong>Pemrograman Web 1</strong></span>
+            <span>Tugas: <strong>Latihan 11 (Operator JS)</strong></span>
+        </div>
+    </header>
+
+    <div class="grid-layout">
+        <!-- LEFT PANEL: CASE STUDY & LIVE RUNTIME OUTPUT -->
+        <div class="card">
+            <h2 class="card-title">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+                Studi Kasus: Kasir Minimarket "Berkah Jaya"
+            </h2>
+            
+            <div class="case-banner">
+                <h4>Skenario Transaksi</h4>
+                <p>Seorang pelanggan bernama <strong>Alvis</strong> membeli barang kebutuhan pokok. Program akan menghitung subtotal belanja, rata-rata harga barang per unit, diskon promo, sisa bagi poin belanja (modulo), serta melakukan perbandingan untuk validasi promo dan metode pembayaran tanpa menggunakan fungsi sama sekali.</p>
+            </div>
+
+            <!-- Receipt Container where values will be updated by pure JavaScript -->
+            <div class="receipt">
+                <div class="receipt-header">
+                    <h3>BERKAH JAYA MINIMARKET</h3>
+                    <p>Jl. Teknik Informatika No. 101</p>
+                    <p>Status: LUNAS</p>
+                </div>
+
+                <div class="receipt-row">
+                    <span>Pelanggan:</span>
+                    <span id="res-pelanggan">-</span>
+                </div>
+                <div class="receipt-row">
+                    <span>Metode:</span>
+                    <span id="res-metode">-</span>
+                </div>
+                
+                <div class="receipt-divider"></div>
+
+                <div class="receipt-row">
+                    <span id="res-item1-qty-name">-</span>
+                    <span id="res-item1-subtotal">-</span>
+                </div>
+                <div class="receipt-row">
+                    <span id="res-item2-qty-name">-</span>
+                    <span id="res-item2-subtotal">-</span>
+                </div>
+
+                <div class="receipt-divider"></div>
+
+                <div class="receipt-row">
+                    <span>TOTAL BELANJA KOTOR (Bruto):</span>
+                    <span id="res-total-kotor" class="highlight-blue">-</span>
+                </div>
+
+                <div class="receipt-row">
+                    <span>Rata-Rata Harga / Unit:</span>
+                    <span id="res-rata-rata">-</span>
+                </div>
+
+                <div class="receipt-row">
+                    <span>Diskon Belanja (> Rp150.000):</span>
+                    <span id="res-diskon" class="highlight-yellow">-</span>
+                </div>
+
+                <div class="receipt-row">
+                    <span>TOTAL BERSIH (Netto):</span>
+                    <span id="res-total-bersih" class="highlight-green">-</span>
+                </div>
+
+                <div class="receipt-divider"></div>
+
+                <div class="receipt-row">
+                    <span>Poin Reward Diperoleh:</span>
+                    <span id="res-poin">-</span>
+                </div>
+                
+                <div class="receipt-row">
+                    <span>Sisa Poin Promo (Modulo 50k):</span>
+                    <span id="res-sisa-bagi">-</span>
+                </div>
+
+                <div class="receipt-divider"></div>
+
+                <div class="receipt-row">
+                    <span>Jumlah Uang Dibayar:</span>
+                    <span id="res-uang-dibayar">-</span>
+                </div>
+
+                <div class="receipt-row">
+                    <span>Kembalian:</span>
+                    <span id="res-kembalian" class="highlight-green">-</span>
+                </div>
+            </div>
+
+            <!-- Visual Explanatory notes -->
+            <div class="explanation-box">
+                <h4>
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
+                    Kepatuhan Terhadap Aturan Tugas:
+                </h4>
+                <ul>
+                    <li><strong>No-Function Constraint:</strong> Seluruh perhitungan ditulis secara sekuensial langsung dieksekusi di root script tanpa ada pembuatan <code>function</code> atau callback.</li>
+                    <li><strong>Variabel Mandiri:</strong> Nilai masukan dideklarasikan langsung sebagai variabel utama agar mudah dimodifikasi sewaktu-waktu.</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- RIGHT PANEL: OPERATORS LIVE EVALUATION & BREAKDOWN -->
+        <div class="card">
+            <h2 class="card-title">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 18 22 12 16 6"></polyline><polyline points="8 6 2 12 8 18"></polyline></svg>
+                Evaluasi Logika & Perbandingan
+            </h2>
+
+            <!-- ARITHMETIC OPERATORS -->
+            <div class="op-group">
+                <div class="op-group-title">
+                    <span class="badge badge-arith">Aritmatika</span>
+                    <span>Perhitungan Nilai</span>
+                </div>
+
+                <div class="op-item">
+                    <div class="op-expr">
+                        <span class="code-snippet">* (Perkalian)</span>
+                        <span id="eval-perkalian" class="highlight-blue">-</span>
+                    </div>
+                    <div class="op-desc">Menghitung perkalian harga barang dengan jumlah (qty).</div>
+                </div>
+
+                <div class="op-item">
+                    <div class="op-expr">
+                        <span class="code-snippet">+ (Penjumlahan)</span>
+                        <span id="eval-penjumlahan" class="highlight-blue">-</span>
+                    </div>
+                    <div class="op-desc">Menggabungkan total belanjaan beras dan minyak goreng.</div>
+                </div>
+
+                <div class="op-item">
+                    <div class="op-expr">
+                        <span class="code-snippet">/ (Pembagian)</span>
+                        <span id="eval-pembagian" class="highlight-blue">-</span>
+                    </div>
+                    <div class="op-desc">Membagi total belanja dengan total kuantitas unit barang.</div>
+                </div>
+
+                <div class="op-item">
+                    <div class="op-expr">
+                        <span class="code-snippet">- (Pengurangan)</span>
+                        <span id="eval-pengurangan" class="highlight-blue">-</span>
+                    </div>
+                    <div class="op-desc">Mengurangi total kotor dengan nilai diskon yang didapat.</div>
+                </div>
+
+                <div class="op-item">
+                    <div class="op-expr">
+                        <span class="code-snippet">% (Modulo)</span>
+                        <span id="eval-modulo" class="highlight-blue">-</span>
+                    </div>
+                    <div class="op-desc">Mendapatkan sisa bagi pembagian total belanja dengan nominal 50.000.</div>
+                </div>
+            </div>
+
+            <!-- COMPARISON OPERATORS -->
+            <div class="op-group">
+                <div class="op-group-title">
+                    <span class="badge badge-comp">Perbandingan</span>
+                    <span>Validasi Kondisi (Boolean)</span>
+                </div>
+
+                <div class="op-item">
+                    <div class="op-expr">
+                        <span class="code-snippet">&gt; (Lebih Besar)</span>
+                        <span id="eval-lebih-besar">-</span>
+                    </div>
+                    <div class="op-desc">Apakah total belanja kotor &gt; Rp150.000? (Syarat Diskon 10%)</div>
+                </div>
+
+                <div class="op-item">
+                    <div class="op-expr">
+                        <span class="code-snippet">&gt;= (Lebih Besar Sama Dengan)</span>
+                        <span id="eval-lebih-besar-sama">-</span>
+                    </div>
+                    <div class="op-desc">Apakah poin reward &gt;= 4? (Berhak hadiah tumbler gratis)</div>
+                </div>
+
+                <div class="op-item">
+                    <div class="op-expr">
+                        <span class="code-snippet">=== (Identik / Strict Equal)</span>
+                        <span id="eval-strict-equal">-</span>
+                    </div>
+                    <div class="op-desc">Apakah metode pembayaran === "E-Wallet"?</div>
+                </div>
+
+                <div class="op-item">
+                    <div class="op-expr">
+                        <span class="code-snippet">&lt;= (Lebih Kecil Sama Dengan)</span>
+                        <span id="eval-kurang-sama">-</span>
+                    </div>
+                    <div class="op-desc">Apakah total bersih &lt;= jumlah uang tunai dibayar? (Pembayaran Valid)</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <p>&copy; 2026 - Tugas Praktikum Mandiri Pemrograman Web 1. Dibuat dengan presisi tinggi.</p>
+    </footer>
+</div>
+
+<!-- ========================================== -->
+<!-- JAVASCRIPT CODE IMPLEMENTING THE CORE TASK -->
+<!-- ========================================== -->
+<script>
+    // 1. DEKLARASI VARIABEL (INPUT DATA)
+    var namaPelanggan = "Alvis";
+    var metodePembayaran = "E-Wallet";
+    
+    // Barang 1: Beras Premium
+    var barang1Nama = "Beras Premium 5kg";
+    var barang1Harga = 68000;
+    var barang1Qty = 2;
+
+    // Barang 2: Minyak Goreng
+    var barang2Nama = "Minyak Goreng 2L";
+    var barang2Harga = 34000;
+    var barang2Qty = 3;
+
+    var uangDibayar = 250000;
+
+    // ========================================================
+    // 2. OPERATOR ARITMATIKA
+    // ========================================================
+    
+    // operator * (perkalian) untuk menghitung subtotal masing-masing barang
+    var subtotalBarang1 = barang1Harga * barang1Qty;
+    var subtotalBarang2 = barang2Harga * barang2Qty;
+
+    // operator + (penjumlahan) untuk menghitung total belanja kotor dan total qty
+    var totalKuantitas = barang1Qty + barang2Qty;
+    var totalBelanjaKotor = subtotalBarang1 + subtotalBarang2;
+
+    // operator / (pembagian) untuk menghitung rata-rata harga barang per unit yang dibeli
+    var rataRataHarga = totalBelanjaKotor / totalKuantitas;
+
+    // Menghitung poin reward (Setiap kelipatan belanja Rp50.000 mendapat 1 poin)
+    var poinReward = Math.floor(totalBelanjaKotor / 50000);
+
+    // operator % (modulo / sisa bagi) untuk menghitung nominal sisa yang tidak terkonversi poin kelipatan 50.000
+    var sisaBelanjaPoin = totalBelanjaKotor % 50000;
+
+    // Penentuan Diskon Belanja (menggunakan percabangan dasar untuk menentukan diskon)
+    var diskon = 0;
+    if (totalBelanjaKotor > 150000) {
+        // Mendapat diskon 10% jika belanja > 150.000
+        diskon = totalBelanjaKotor * 0.1; 
+    }
+
+    // operator - (pengurangan) untuk menghitung total bersih yang harus dibayar
+    var totalBelanjaBersih = totalBelanjaKotor - diskon;
+
+    // Menghitung sisa kembalian dari uang yang dibayar
+    var uangKembalian = uangDibayar - totalBelanjaBersih;
+
+
+    // ========================================================
+    // 3. OPERATOR PERBANDINGAN
+    // ========================================================
+    
+    // operator > (lebih besar dari) untuk mengecek apakah belanja kotor di atas threshold diskon Rp150.000
+    var apakahMendapatDiskon = totalBelanjaKotor > 150000;
+
+    // operator >= (lebih besar atau sama dengan) untuk mengecek apakah pelanggan mendapat tumbler gratis (syarat minimal poin >= 4)
+    var apakahDapatHadiahTumbler = poinReward >= 4;
+
+    // operator === (sama nilai dan tipe / identik) untuk memvalidasi metode pembayaran yang digunakan
+    var apakahPembayaranEWallet = metodePembayaran === "E-Wallet";
+
+    // operator <= (lebih kecil atau sama dengan) untuk memverifikasi apakah total bayar muat dalam budget uang kas
+    var apakahUangCukup = totalBelanjaBersih <= uangDibayar;
+
+
+    // ========================================================
+    // 4. MEMASUKKAN HASIL PERHITUNGAN KE TAMPILAN DOM HTML
+    // ========================================================
+    
+    // Detail Pelanggan & Metode Pembayaran
+    document.getElementById("res-pelanggan").innerText = namaPelanggan;
+    document.getElementById("res-metode").innerText = metodePembayaran;
+
+    // Item 1
+    document.getElementById("res-item1-qty-name").innerText = barang1Qty + "x " + barang1Nama;
+    document.getElementById("res-item1-subtotal").innerText = "Rp" + subtotalBarang1.toLocaleString("id-ID");
+
+    // Item 2
+    document.getElementById("res-item2-qty-name").innerText = barang2Qty + "x " + barang2Nama;
+    document.getElementById("res-item2-subtotal").innerText = "Rp" + subtotalBarang2.toLocaleString("id-ID");
+
+    // Rangkuman Aritmatika di Struk Belanja
+    document.getElementById("res-total-kotor").innerText = "Rp" + totalBelanjaKotor.toLocaleString("id-ID");
+    document.getElementById("res-rata-rata").innerText = "Rp" + Math.round(rataRataHarga).toLocaleString("id-ID");
+    document.getElementById("res-diskon").innerText = "- Rp" + diskon.toLocaleString("id-ID");
+    document.getElementById("res-total-bersih").innerText = "Rp" + totalBelanjaBersih.toLocaleString("id-ID");
+    document.getElementById("res-poin").innerText = poinReward + " Poin " + (apakahDapatHadiahTumbler ? "(+ Bonus Tumbler Gratis!)" : "");
+    document.getElementById("res-sisa-bagi").innerText = "Rp" + sisaBelanjaPoin.toLocaleString("id-ID");
+    document.getElementById("res-uang-dibayar").innerText = "Rp" + uangDibayar.toLocaleString("id-ID");
+    document.getElementById("res-kembalian").innerText = "Rp" + uangKembalian.toLocaleString("id-ID");
+
+    // Menampilkan Evaluasi Hasil Formula secara Eksplisit di Panel Kanan
+    // Aritmatika
+    document.getElementById("eval-perkalian").innerText = "Rp" + barang1Harga.toLocaleString("id-ID") + " * " + barang1Qty + " = Rp" + subtotalBarang1.toLocaleString("id-ID");
+    document.getElementById("eval-penjumlahan").innerText = "Rp" + subtotalBarang1.toLocaleString("id-ID") + " + Rp" + subtotalBarang2.toLocaleString("id-ID") + " = Rp" + totalBelanjaKotor.toLocaleString("id-ID");
+    document.getElementById("eval-pembagian").innerText = "Rp" + totalBelanjaKotor.toLocaleString("id-ID") + " / " + totalKuantitas + " pcs = Rp" + Math.round(rataRataHarga).toLocaleString("id-ID") + "/unit";
+    document.getElementById("eval-pengurangan").innerText = "Rp" + totalBelanjaKotor.toLocaleString("id-ID") + " - Rp" + diskon.toLocaleString("id-ID") + " = Rp" + totalBelanjaBersih.toLocaleString("id-ID");
+    document.getElementById("eval-modulo").innerText = "Rp" + totalBelanjaKotor.toLocaleString("id-ID") + " % Rp50.000 = Rp" + sisaBelanjaPoin.toLocaleString("id-ID");
+
+    // Perbandingan
+    document.getElementById("eval-lebih-besar").innerText = "Rp" + totalBelanjaKotor.toLocaleString("id-ID") + " > Rp150.000 ➔ " + apakahMendapatDiskon.toString().toUpperCase();
+    document.getElementById("eval-lebih-besar-sama").innerText = poinReward + " >= 4 ➔ " + apakahDapatHadiahTumbler.toString().toUpperCase();
+    document.getElementById("eval-strict-equal").innerText = '"' + metodePembayaran + '" === "E-Wallet" ➔ ' + apakahPembayaranEWallet.toString().toUpperCase();
+    document.getElementById("eval-kurang-sama").innerText = "Rp" + totalBelanjaBersih.toLocaleString("id-ID") + " <= Rp" + uangDibayar.toLocaleString("id-ID") + " ➔ " + apakahUangCukup.toString().toUpperCase();
+
+</script>
+</body>
+</html>

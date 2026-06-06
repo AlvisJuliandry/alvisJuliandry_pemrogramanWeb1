@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tugas Pertemuan 13 - Kalkulator Lengkap</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f1f2f6;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 10px;
+        }
+
+        .calculator-container {
+            background-color: #2c3e50;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.25);
+            width: 320px;
+            border: 2px solid #34495e;
+        }
+
+        .title {
+            color: #ecf0f1;
+            text-align: center;
+            font-size: 14px;
+            margin-top: 0;
+            margin-bottom: 15px;
+            font-weight: bold;
+            letter-spacing: 1px;
+            border-bottom: 1px solid #34495e;
+            padding-bottom: 8px;
+        }
+
+        .screen {
+            background-color: #1e272e;
+            border-radius: 5px;
+            padding: 12px;
+            margin-bottom: 20px;
+            text-align: right;
+            color: #ffffff;
+            box-sizing: border-box;
+            border: 1px solid #000;
+        }
+
+        .screen .history {
+            font-size: 13px;
+            color: #bdc3c7;
+            min-height: 18px;
+            margin-bottom: 4px;
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+        }
+
+        .screen .current-output {
+            font-size: 26px;
+            font-weight: bold;
+            color: #2ecc71;
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+            min-height: 32px;
+        }
+
+        .btn-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 8px;
+        }
+
+        button {
+            padding: 15px 5px;
+            font-size: 16px;
+            font-weight: bold;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.1s, transform 0.05s;
+        }
+
+        button:active {
+            transform: scale(0.96);
+        }
+
+        /* Operator Warna Abu Tua */
+        .btn-action {
+            background-color: #7f8c8d;
+            color: #ffffff;
+        }
+
+        .btn-action:hover {
+            background-color: #95a5a6;
+        }
+
+        /* Angka Warna Abu Terang */
+        .btn-num {
+            background-color: #ecf0f1;
+            color: #2c3e50;
+        }
+
+        .btn-num:hover {
+            background-color: #bdc3c7;
+        }
+
+        /* Operator Matematika Utama Warna Orange */
+        .btn-operator {
+            background-color: #e67e22;
+            color: #ffffff;
+        }
+
+        .btn-operator:hover {
+            background-color: #d35400;
+        }
+
+        /* Tombol Hapus/Clear Warna Merah */
+        .btn-clear {
+            background-color: #e74c3c;
+            color: #ffffff;
+        }
+
+        .btn-clear:hover {
+            background-color: #c0392b;
+        }
+
+        /* Tombol Sama Dengan Warna Biru */
+        .btn-equals {
+            background-color: #3498db;
+            color: #ffffff;
+            grid-column: span 1;
+        }
+
+        .btn-equals:hover {
+            background-color: #2980b9;
+        }
+
+        /* Petunjuk Keyboard */
+        .keyboard-tips {
+            text-align: center;
+            color: #7f8c8d;
+            font-size: 11px;
+            margin-top: 15px;
+            line-height: 1.4;
+        }
+    </style>
+</head>
+<body>
+
+<div class="calculator-container">
+    <div class="title">KALKULATOR MAHASISWA</div>
+
+    <!-- Tampilan Layar Utama Kalkulator -->
+    <div class="screen">
+        <div class="history" id="history"></div>
+        <div class="current-output" id="output">0</div>
+    </div>
+
+    <!-- Layout Grid Tombol -->
+    <div class="btn-grid">
+        <!-- Baris 1 -->
+        <button class="btn-clear" onclick="clearAll()">C</button>
+        <button class="btn-action" onclick="deleteChar()">⌫</button>
+        <button class="btn-action" onclick="percentage()">%</button>
+        <button class="btn-operator" onclick="chooseOperation('/')">÷</button>
+
+        <!-- Baris 2 -->
+        <button class="btn-action" onclick="calculateSquare()">x²</button>
+        <button class="btn-action" onclick="calculateSqrt()">√</button>
+        <button class="btn-action" onclick="toggleSign()">±</button>
+        <button class="btn-operator" onclick="chooseOperation('*')">×</button>
+
+        <!-- Baris 3 -->
+        <button class="btn-num" onclick="appendNumber('7')">7</button>
+        <button class="btn-num" onclick="appendNumber('8')">8</button>
+        <button class="btn-num" onclick="appendNumber('9')">9</button>
+        <button class="btn-operator" onclick="chooseOperation('-')">−</button>
+
+        <!-- Baris 4 -->
+        <button class="btn-num" onclick="appendNumber('4')">4</button>
+        <button class="btn-num" onclick="appendNumber('5')">5</button>
+        <button class="btn-num" onclick="appendNumber('6')">6</button>
+        <button class="btn-operator" onclick="chooseOperation('+')">+</button>
+
+        <!-- Baris 5 -->
+        <button class="btn-num" onclick="appendNumber('1')">1</button>
+        <button class="btn-num" onclick="appendNumber('2')">2</button>
+        <button class="btn-num" onclick="appendNumber('3')">3</button>
+        <!-- Tombol Eksponen/Pangkat bebas -->
+        <button class="btn-action" onclick="chooseOperation('^')">xʸ</button>
+
+        <!-- Baris 6 -->
+        <button class="btn-num" style="grid-column: span 2;" onclick="appendNumber('0')">0</button>
+        <button class="btn-num" onclick="appendNumber('.')">.</button>
+        <button class="btn-equals" onclick="evaluateCalculation()">=</button>
+    </div>
+
+    <!-- Informasi Pintasan Keyboard -->
+    <div class="keyboard-tips">
+        Mendukung Input Numpad Keyboard:<br>
+        [0-9], [.], [+], [-], [*], [/], [Enter / =], [Backspace], [Esc / C]
+    </div>
+</div>
+
+<script>
+    // State kalkulator
+    let currentInput = "0";
+    let previousInput = "";
+    let selectedOperator = null;
+    let isResetOnNextInput = false;
+
+    const outputScreen = document.getElementById('output');
+    const historyScreen = document.getElementById('history');
+
+    // Memperbarui tampilan layar kalkulator
+    function updateDisplay() {
+        // Output utama
+        outputScreen.innerText = currentInput;
+
+        // Output riwayat
+        if (selectedOperator !== null) {
+            let operatorSymbol = selectedOperator;
+            if (selectedOperator === '*') operatorSymbol = ' ×';
+            if (selectedOperator === '/') operatorSymbol = ' ÷';
+            if (selectedOperator === '^') operatorSymbol = ' ^';
+            historyScreen.innerText = `${previousInput}${operatorSymbol}`;
+        } else {
+            historyScreen.innerText = previousInput;
+        }
+    }
+
+    // Menambah karakter angka ke layar
+    function appendNumber(number) {
+        // Cegah dobel desimal/koma
+        if (number === '.' && currentInput.includes('.')) return;
+
+        // Jika baru selesai menghitung, bersihkan input lama untuk angka baru
+        if (isResetOnNextInput) {
+            currentInput = "";
+            isResetOnNextInput = false;
+        }
+
+        // Cek jika input awal adalah "0" default
+        if (currentInput === "0" && number !== '.') {
+            currentInput = number;
+        } else {
+            currentInput += number;
+        }
+        updateDisplay();
+    }
+
+    // Menghapus seluruh state kalkulator (Clear All)
+    function clearAll() {
+        currentInput = "0";
+        previousInput = "";
+        selectedOperator = null;
+        isResetOnNextInput = false;
+        updateDisplay();
+    }
+
+    // Menghapus satu karakter terakhir (Backspace)
+    function deleteChar() {
+        if (isResetOnNextInput) {
+            clearAll();
+            return;
+        }
+        if (currentInput.length > 1) {
+            currentInput = currentInput.slice(0, -1);
+        } else {
+            currentInput = "0";
+        }
+        updateDisplay();
+    }
+
+    // Menentukan operator matematika (+, -, *, /, ^)
+    function chooseOperation(op) {
+        if (selectedOperator !== null && currentInput !== "0" && !isResetOnNextInput) {
+            // Jika ada operasi beruntun, selesaikan dulu operasi sebelumnya
+            evaluateCalculation();
+        }
+
+        selectedOperator = op;
+        previousInput = currentInput;
+        // Tandai bahwa input berikutnya akan menimpa layar utama
+        isResetOnNextInput = true;
+        updateDisplay();
+    }
+
+    // Melakukan operasi perhitungan utama secara aman tanpa eval()
+    function evaluateCalculation() {
+        if (selectedOperator === null || isResetOnNextInput && previousInput === "") return;
+
+        const prev = parseFloat(previousInput);
+        const current = parseFloat(currentInput);
+
+        if (isNaN(prev) || isNaN(current)) return;
+
+        let result = 0;
+
+        switch (selectedOperator) {
+            case '+':
+                result = prev + current;
+                break;
+            case '-':
+                result = prev - current;
+                break;
+            case '*':
+                result = prev * current;
+                break;
+            case '/':
+                if (current === 0) {
+                    alert("Kesalahan: Tidak dapat membagi dengan angka nol!");
+                    clearAll();
+                    return;
+                }
+                result = prev / current;
+                break;
+            case '^':
+                result = Math.pow(prev, current);
+                break;
+            default:
+                return;
+        }
+
+        // Format angka desimal agar tidak terlalu panjang di layar (maksimal 8 angka di belakang koma)
+        if (result.toString().includes('.') && result.toString().split('.')[1].length > 8) {
+            currentInput = result.toFixed(8).replace(/\.?0+$/, "");
+        } else {
+            currentInput = result.toString();
+        }
+
+        previousInput = `${prev} ${selectedOperator === '*' ? '×' : selectedOperator === '/' ? '÷' : selectedOperator} ${current} =`;
+        selectedOperator = null;
+        isResetOnNextInput = true;
+        updateDisplay();
+    }
+
+    // Operasi Persentase (%) atau pembagian 100
+    function percentage() {
+        const val = parseFloat(currentInput);
+        if (isNaN(val)) return;
+        currentInput = (val / 100).toString();
+        updateDisplay();
+    }
+
+    // Operasi Pangkat Dua (x²)
+    function calculateSquare() {
+        const val = parseFloat(currentInput);
+        if (isNaN(val)) return;
+        
+        let result = val * val;
+        previousInput = `sqr(${val})`;
+        currentInput = result.toString();
+        isResetOnNextInput = true;
+        updateDisplay();
+    }
+
+    // Operasi Akar Kuadrat (√x)
+    function calculateSqrt() {
+        const val = parseFloat(currentInput);
+        if (isNaN(val)) return;
+        
+        if (val < 0) {
+            alert("Kesalahan: Input akar kuadrat tidak boleh negatif!");
+            return;
+        }
+        
+        let result = Math.sqrt(val);
+        previousInput = `√(${val})`;
+        
+        if (result.toString().includes('.') && result.toString().split('.')[1].length > 8) {
+            currentInput = result.toFixed(8).replace(/\.?0+$/, "");
+        } else {
+            currentInput = result.toString();
+        }
+        
+        isResetOnNextInput = true;
+        updateDisplay();
+    }
+
+    // Operasi Pembalikan Tanda Positif/Negatif (±)
+    function toggleSign() {
+        const val = parseFloat(currentInput);
+        if (isNaN(val) || val === 0) return;
+        currentInput = (val * -1).toString();
+        updateDisplay();
+    }
+
+    // Menghubungkan Input Tombol Keyboard Fisik ke Fungsi Kalkulator
+    window.addEventListener('keydown', function(event) {
+        const key = event.key;
+
+        if (key >= '0' && key <= '9') {
+            appendNumber(key);
+        } else if (key === '.') {
+            appendNumber('.');
+        } else if (key === '+') {
+            chooseOperation('+');
+        } else if (key === '-') {
+            chooseOperation('-');
+        } else if (key === '*') {
+            chooseOperation('*');
+        } else if (key === '/') {
+            event.preventDefault(); // Mencegah browser membuka kotak cari shortcut
+            chooseOperation('/');
+        } else if (key === '^') {
+            chooseOperation('^');
+        } else if (key === '%' ) {
+            percentage();
+        } else if (key === 'Enter' || key === '=') {
+            event.preventDefault();
+            evaluateCalculation();
+        } else if (key === 'Backspace') {
+            deleteChar();
+        } else if (key === 'Escape') {
+            clearAll();
+        }
+    });
+</script>
+
+</body>
+</html>
